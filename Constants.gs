@@ -1,0 +1,54 @@
+// report sheet columns indexed from 1
+
+var SS_SPEND_PERIOD1 = 2;
+var SS_SPEND_PERIOD2 = 3;
+var SS_REVENUE_PERIOD1 = 4;
+var SS_REVENUE_PERIOD2 = 5;
+var SS_ROAS_PERIOD1 = 6;
+var SS_ROAS_PERIOD2 = 7;
+var SS_SPEND_PERIOD3 = 8;
+var SS_SPEND_PERIOD4 = 9;
+var SS_REVENUE_PERIOD3 = 10;
+var SS_REVENUE_PERIOD4 = 11;
+var SS_ROAS_PERIOD3 = 12;
+var SS_ROAS_PERIOD4 = 13;
+// raw data
+var SS_NAME = 1;
+var SS_IMPRESSIONS = 2;
+var SS_CLICKS= 3;
+var SS_CTR = 4;
+var SS_AVG_CPC = 5;
+var SS_SPEND = 6;
+var SS_SALES = 7;
+var SS_REVENUE = 8;
+var SS_SPEND_PER_SALE = 9;
+var SS_ROAS = 10;
+var SS_REVENUE_PER_CLICK = 11;
+var SS_CONVERSIONS = 12;
+var SS_PLATFORM = 13;
+var SS_PERIOD = 14;
+var SS_BRAND = 15;
+var SS_OWNER = 16;
+
+// 0 indexed columns for data
+
+var PLATFORM_INDEX = SS_PLATFORM - 1;
+var BRAND_INDEX = SS_BRAND - 1;
+var OWNER_INDEX = SS_OWNER - 1;
+var PERIOD_INDEX = SS_PERIOD - 1;
+var SPEND_INDEX = SS_SPEND - 1;
+var REVENUE_INDEX = SS_REVENUE - 1;
+var ROAS_INDEX = SS_ROAS - 1;
+
+var SPEND_4W = SS_SPEND_4W -1;
+var SPEND_2W = SS_SPEND_2W -1;
+var REVENUE_4W = SS_REVENUE_4W -1;
+var REVENUE_2W = SS_REVENUE_2W -1;
+var ROAS_4W = SS_ROAS_4W -1;
+var ROAS_2W = SS_ROAS_2W -1;
+var SPEND_PM = SS_SPEND_PM -1;
+var SPEND_LM = SS_SPEND_LM -1;
+var REVENUE_PM = SS_REVENUE_PM -1;
+var REVENUE_LM = SS_REVENUE_LM -1;
+var ROAS_PM = SS_ROAS_PM -1;
+var ROAS_LM = SS_ROAS_LM -1;
