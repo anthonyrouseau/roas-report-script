@@ -1,6 +1,6 @@
 # ROAS Report script
 
-## Not intended for general used
+## Not intended for general use
 ### Will need modifications to work for your use!
 
 This script was created to automatically create a report on various marketing
