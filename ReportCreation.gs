@@ -130,3 +130,123 @@ function mainReport(store) {
     }
   });
 }
+
+
+function placeData(data, space, color){
+  //space refers to space above added data. defaults to one line of space
+  var reportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Report");
+  SpreadsheetApp.setActiveSheet(reportSheet);
+  var lastRow = reportSheet.getLastRow();
+  if (typeof space === "undefined"){
+    var startRow = lastRow + 2;
+  } else if (typeof space === "number"){
+    var startRow = lastRow + space + 1;
+  } else if (!space){
+    var startRow = lastRow + 1;
+  }
+  var dataSize = getDataSize(data);
+  var dataRange = reportSheet.getRange(startRow,1,dataSize.rows, dataSize.columns);
+  if (color){
+    dataRange.setBackground(color)
+  }
+  dataRange.setValues(data);
+  setRoasFormula(startRow, dataSize.rows);
+  return startRow
+}
+
+function setRoasFormula(startRow, numRows){
+  var reportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Report");
+  SpreadsheetApp.setActiveSheet(reportSheet);
+  var roasColumns = [SS_ROAS_4W,SS_ROAS_2W,SS_ROAS_PM,SS_ROAS_LM];
+  roasColumns.forEach(function(column){
+    var currentRange = reportSheet.getRange(startRow, column, numRows);
+    currentRange.setFormulaR1C1("=ROUND(DIVIDE(R[0]C[-2],R[0]C[-4]),2)");
+    currentRange.setFontWeight("bold");
+  });
+}
+
+function getColumnHeaders(title){
+  var firstHeader = ["Spend","Revenue", "ROAS", "Spend", "Revenue", "ROAS"];
+  var secondHeader = [title];
+  var headers = {
+    valueHeader: firstHeader,
+    periodHeader: secondHeader
+  }
+  return headers
+}
+
+function placeHeader(header,columnNumber){
+  var reportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Report");
+  SpreadsheetApp.setActiveSheet(reportSheet);
+  var lastRow = reportSheet.getLastRow();
+
+  var headerLength = header.length;
+  var rangeLength = columnNumber - 1;
+  var mergeValue = rangeLength/headerLength;
+  // header is for spend revenue etc.
+  if (header.length > 1){
+    var currentColumn = 2;
+    var headerCounter = 0;
+    while(currentColumn <= columnNumber){
+      var mergeRange = reportSheet.getRange(lastRow + 2, currentColumn, 1, mergeValue);
+      mergeRange.mergeAcross();
+      mergeRange.setValue(header[headerCounter]);
+      mergeRange.setHorizontalAlignment("center");
+      currentColumn += mergeValue;
+      headerCounter++;
+    }
+  }
+  //header is for time period
+  else{
+    var currentRow = lastRow + 1;
+    var titleRange = reportSheet.getRange(currentRow, 1);
+    titleRange.setValue(header[0]);
+    var twoWeeks = [SS_SPEND_2W,SS_REVENUE_2W,SS_ROAS_2W];
+    var fourWeeks = [SS_SPEND_4W,SS_REVENUE_4W,SS_ROAS_4W];
+    var lastMonth = [SS_SPEND_LM,SS_REVENUE_LM,SS_ROAS_LM];
+    var pMonth = [SS_SPEND_PM,SS_REVENUE_PM,SS_ROAS_PM];
+
+    for (i=0; i<twoWeeks.length; i++){
+      var range = reportSheet.getRange(currentRow, twoWeeks[i]);
+      range.setFormula('=TEXT(TODAY()-14,"MM/d") & " - " & TEXT(TODAY()-1,"MM/D")');
+      range.setHorizontalAlignment("center");
+    }
+    for (i=0; i<fourWeeks.length; i++){
+      var range = reportSheet.getRange(currentRow, fourWeeks[i]);
+      range.setFormula('=TEXT(TODAY()-28,"MM/d") & " - " & TEXT(TODAY()-15,"MM/D")');
+      range.setHorizontalAlignment("center");
+    }
+    for (i=0; i<lastMonth.length; i++){
+      var range = reportSheet.getRange(currentRow, lastMonth[i]);
+      range.setFormula('=TEXT(TODAY()-30,"MM/d") & " - " & TEXT(TODAY()-1,"MM/D")');
+      range.setHorizontalAlignment("center");
+    }
+    for (i=0; i<pMonth.length; i++){
+      var range = reportSheet.getRange(currentRow, pMonth[i]);
+      range.setFormula('=TEXT(TODAY()-60,"MM/d") & " - " & TEXT(TODAY()-31,"MM/D")');
+      range.setHorizontalAlignment("center");
+    }
+  }
+}
+
+function setTotalsFormula(totalRow){
+  // sets the forumula for cells that are totals
+  var reportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Report");
+  SpreadsheetApp.setActiveSheet(reportSheet);
+  var lastRow = reportSheet.getLastRow();
+  // columns containing totals
+  var totalColumns = [SS_SPEND_4W,SS_SPEND_2W,SS_REVENUE_4W,SS_REVENUE_2W,SS_SPEND_PM,SS_SPEND_LM,SS_REVENUE_PM,SS_REVENUE_LM];
+
+  totalColumns.forEach(function(column){
+    var currentRange = reportSheet.getRange(totalRow, column);
+    var formula = "=SUM(R[1]C[0]:R[" + (lastRow-totalRow) + "]C[0])";
+    currentRange.setFormulaR1C1(formula);
+    currentRange.setFontWeight("bold");
+  });
+}
+
+function addBorder(start, end, numberColumns){
+  var reportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Report");
+  var range = reportSheet.getRange(start, 1, end - start + 1, numberColumns);
+  range.setBorder(true, true, true, true, true, false, "black", SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+}
